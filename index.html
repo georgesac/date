@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunday Invitation</title>
+    <title>Valentine's Invitation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -94,6 +94,8 @@
             text-align: center;
             color: #d63384;
             width: 100%;
+            height: 100%;
+            position: relative;
         }
 
         .panda-logo {
@@ -106,9 +108,10 @@
             font-size: 3.5rem;
             font-weight: 700;
             font-family: 'Dancing Script', cursive;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             line-height: 1.2;
+            padding: 0 20px;
         }
 
         /* Button Styles */
@@ -138,8 +141,8 @@
         .btn-yes {
             background: linear-gradient(to right, #4CAF50, #8BC34A);
             color: white;
-            margin-right: 15px;
             z-index: 2;
+            position: relative;
         }
 
         .btn-yes:hover {
@@ -150,21 +153,19 @@
         .btn-no {
             background: linear-gradient(to right, #f44336, #FF9800);
             color: white;
-            position: relative;
+            position: absolute;
             z-index: 1;
+            transition: all 0.4s ease;
         }
 
         .buttons-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            margin-top: 30px;
+            margin-top: 20px;
             position: relative;
             width: 100%;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 10px;
+            gap: 15px;
         }
 
         .button-wrapper {
@@ -176,35 +177,37 @@
 
         .no-message {
             position: absolute;
-            top: -50px;
+            top: -45px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.95);
             color: #f44336;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 1rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
             opacity: 0;
             transition: opacity 0.3s ease;
-            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.2);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
             white-space: nowrap;
             z-index: 3;
             border: 2px solid #ffcdd2;
             animation: messagePulse 2s infinite;
+            max-width: 90%;
+            text-align: center;
         }
 
         .no-message::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -6px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid #ffcdd2;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #ffcdd2;
         }
 
         /* Celebration Screen */
@@ -317,12 +320,7 @@
 
         @keyframes messagePulse {
             0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
-        }
-
-        @keyframes runAway {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(var(--moveX), var(--moveY)); }
+            50% { transform: translateX(-50%) scale(1.03); }
         }
 
         /* Responsive Design */
@@ -345,10 +343,11 @@
             
             .valentine-title {
                 font-size: 2.8rem;
+                margin-bottom: 20px;
             }
             
             .btn {
-                padding: 14px 30px;
+                padding: 14px 35px;
                 font-size: 1.2rem;
             }
             
@@ -361,13 +360,13 @@
             }
             
             .buttons-container {
-                height: 100px;
-                flex-direction: column;
+                gap: 12px;
             }
             
-            .btn-yes {
-                margin-right: 0;
-                margin-bottom: 10px;
+            .no-message {
+                font-size: 0.8rem;
+                padding: 5px 12px;
+                top: -40px;
             }
         }
 
@@ -382,11 +381,8 @@
             
             .valentine-title {
                 font-size: 2.2rem;
-                padding: 0 10px;
-            }
-            
-            .buttons-container {
-                height: 120px;
+                padding: 0 15px;
+                margin-bottom: 15px;
             }
             
             .celebration-message {
@@ -396,6 +392,25 @@
             
             .panda-emoji {
                 font-size: 2.5rem;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .no-message {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+                top: -35px;
+                border-radius: 15px;
+            }
+            
+            .no-message::after {
+                bottom: -5px;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 5px solid #ffcdd2;
             }
         }
 
@@ -423,10 +438,6 @@
         .no-button-shy {
             animation: shake 0.5s ease-in-out;
         }
-        
-        .run-away {
-            animation: runAway 0.4s ease-out forwards;
-        }
     </style>
 </head>
 <body>
@@ -452,7 +463,9 @@
                 </div>
                 <div class="buttons-container" id="buttonsContainer">
                     <button class="btn btn-yes" id="yesBtn">YES</button>
-                    <button class="btn btn-no" id="noBtn">NO</button>
+                    <div style="height: 60px; width: 100%; position: relative;">
+                        <button class="btn btn-no" id="noBtn">NO</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -519,14 +532,14 @@
                 );
                 
                 // Show/hide "No seems a bit shy" message when mouse is near
-                if (distance < 150) {
+                if (distance < 120) {
                     noMessage.style.opacity = '1';
                 } else {
                     noMessage.style.opacity = '0';
                 }
                 
-                // If mouse is within 100px of NO button and not already running away
-                if (distance < 100 && !isRunningAway) {
+                // If mouse is within 80px of NO button and not already running away
+                if (distance < 80 && !isRunningAway) {
                     handleNoButtonHover();
                 }
             });
@@ -569,11 +582,15 @@
 
         // Reset NO button to initial position
         function resetNoButtonPosition() {
-            noBtn.style.position = 'static';
-            noBtn.style.left = '';
-            noBtn.style.top = '';
-            noBtn.style.transform = '';
-            noBtn.style.transition = '';
+            // Position NO button below YES button
+            const yesBtnRect = yesBtn.getBoundingClientRect();
+            const containerRect = valentineScreen.getBoundingClientRect();
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = '50%';
+            noBtn.style.top = `${yesBtnRect.height + 70}px`;
+            noBtn.style.transform = 'translateX(-50%)';
+            noBtn.style.transition = 'all 0.4s ease';
         }
 
         // Handle NO button hover (mouse or touch)
@@ -598,18 +615,20 @@
             const messageIndex = Math.min(noButtonClickCount - 1, messages.length - 1);
             noMessage.textContent = messages[messageIndex];
             
-            // Get container and button dimensions
-            const containerRect = buttonsContainer.getBoundingClientRect();
+            // Get the entire container dimensions (the white box)
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
             const buttonRect = noBtn.getBoundingClientRect();
             
-            // Calculate boundaries - keep button within buttons container
-            const padding = 10;
+            // Calculate boundaries - allow NO button to move anywhere in the white container
+            // But keep it away from edges and avoid covering important content
+            const padding = 20;
+            const topOffset = 180; // Keep below the panda logo and question
             const minX = padding;
             const maxX = containerRect.width - buttonRect.width - padding;
-            const minY = padding;
+            const minY = topOffset;
             const maxY = containerRect.height - buttonRect.height - padding;
             
-            // Generate random position within boundaries
+            // Generate random position within the entire container
             let randomX, randomY;
             let attempts = 0;
             const maxAttempts = 20;
@@ -621,19 +640,27 @@
                 
                 // Avoid getting stuck in loop
                 if (attempts >= maxAttempts) {
-                    // Use fallback positions
-                    randomX = attempts % 2 === 0 ? minX : maxX;
-                    randomY = attempts % 3 === 0 ? minY : maxY;
+                    // Use fallback positions (corners of the container)
+                    const corners = [
+                        {x: minX, y: minY}, // Top-left
+                        {x: maxX, y: minY}, // Top-right
+                        {x: minX, y: maxY}, // Bottom-left
+                        {x: maxX, y: maxY}  // Bottom-right
+                    ];
+                    const corner = corners[attempts % 4];
+                    randomX = corner.x;
+                    randomY = corner.y;
                     break;
                 }
                 
-            } while (Math.abs(randomX - noBtn.offsetLeft) < 30 && Math.abs(randomY - noBtn.offsetTop) < 30);
+            } while (Math.abs(randomX - noBtn.offsetLeft) < 40 && Math.abs(randomY - noBtn.offsetTop) < 40);
             
             // Apply new position with smooth transition
             noBtn.style.transition = 'all 0.4s ease';
             noBtn.style.position = 'absolute';
             noBtn.style.left = `${randomX}px`;
             noBtn.style.top = `${randomY}px`;
+            noBtn.style.transform = 'none';
             
             // Remove shy animation class after animation completes
             setTimeout(() => {
@@ -733,4 +760,3 @@
     </script>
 </body>
 </html>
-
