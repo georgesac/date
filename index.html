@@ -559,7 +559,7 @@
                         Math.pow(mouseX - noBtnCenterX, 2) + Math.pow(mouseY - noBtnCenterY, 2)
                     );
                     
-                    if (distance < 150 && !isRunningAway) {
+                    if (distance < 120 && !isRunningAway) {
                         handleNoButtonHover();
                     }
                 }
@@ -615,20 +615,28 @@
             const messageIndex = Math.min(noButtonClickCount - 1, messages.length - 1);
             noMessage.textContent = messages[messageIndex];
             
-            // Get the entire container dimensions (the white box)
-            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            // Get the container dimensions (the white box)
+            const container = document.querySelector('.container');
+            const containerRect = container.getBoundingClientRect();
             const buttonRect = noBtn.getBoundingClientRect();
             
-            // Calculate boundaries - allow NO button to move anywhere in the white container
-            // But keep it away from edges and avoid covering important content
-            const padding = 20;
-            const topOffset = 180; // Keep below the panda logo and question
-            const minX = padding;
-            const maxX = containerRect.width - buttonRect.width - padding;
-            const minY = topOffset;
-            const maxY = containerRect.height - buttonRect.height - padding;
+            // Calculate boundaries - keep NO button INSIDE the white container
+            const padding = 15;
             
-            // Generate random position within the entire container
+            // The container is positioned relative to the viewport, but we need 
+            // coordinates relative to the container itself
+            const containerLeft = 0;
+            const containerTop = 0;
+            const containerRight = containerRect.width;
+            const containerBottom = containerRect.height;
+            
+            // Calculate min and max positions to keep button inside container
+            const minX = containerLeft + padding;
+            const maxX = containerRight - buttonRect.width - padding;
+            const minY = containerTop + padding;
+            const maxY = containerBottom - buttonRect.height - padding;
+            
+            // Generate random position within the container bounds
             let randomX, randomY;
             let attempts = 0;
             const maxAttempts = 20;
@@ -640,20 +648,17 @@
                 
                 // Avoid getting stuck in loop
                 if (attempts >= maxAttempts) {
-                    // Use fallback positions (corners of the container)
-                    const corners = [
-                        {x: minX, y: minY}, // Top-left
-                        {x: maxX, y: minY}, // Top-right
-                        {x: minX, y: maxY}, // Bottom-left
-                        {x: maxX, y: maxY}  // Bottom-right
-                    ];
-                    const corner = corners[attempts % 4];
-                    randomX = corner.x;
-                    randomY = corner.y;
+                    // Use fallback positions (middle area of container)
+                    randomX = containerRect.width / 2 - buttonRect.width / 2;
+                    randomY = containerRect.height / 2;
                     break;
                 }
                 
             } while (Math.abs(randomX - noBtn.offsetLeft) < 40 && Math.abs(randomY - noBtn.offsetTop) < 40);
+            
+            // Ensure the button stays within bounds
+            randomX = Math.max(minX, Math.min(randomX, maxX));
+            randomY = Math.max(minY, Math.min(randomY, maxY));
             
             // Apply new position with smooth transition
             noBtn.style.transition = 'all 0.4s ease';
