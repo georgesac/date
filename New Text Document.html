@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Invitation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        /* 404 Error Screen */
+        .error-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            z-index: 10;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .error-content {
+            text-align: center;
+            color: white;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .error-message {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Valentine's Invitation Screen */
+        .valentine-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: opacity 0.8s ease, transform 0.8s ease, visibility 0s 0.8s;
+        }
+
+        .valentine-content {
+            text-align: center;
+            color: #d63384;
+            width: 100%;
+        }
+
+        .panda-logo {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .valentine-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            font-family: 'Dancing Script', cursive;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 16px 40px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-refresh {
+            background: white;
+            color: #f5576c;
+            margin-top: 20px;
+        }
+
+        .btn-refresh:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-yes {
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            color: white;
+            margin-right: 15px;
+            z-index: 2;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-no {
+            background: linear-gradient(to right, #f44336, #FF9800);
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            position: relative;
+            width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .button-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .no-message {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: #f44336;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.2);
+            white-space: nowrap;
+            z-index: 3;
+            border: 2px solid #ffcdd2;
+            animation: messagePulse 2s infinite;
+        }
+
+        .no-message::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #ffcdd2;
+        }
+
+        /* Celebration Screen */
+        .celebration-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            z-index: 5;
+            overflow: hidden;
+            transition: opacity 0.8s ease, visibility 0s 0.8s;
+        }
+
+        .celebration-content {
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 6;
+        }
+
+        .celebration-message {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Dancing Script', cursive;
+            color: #d63384;
+            margin-bottom: 40px;
+        }
+
+        .panda-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+            max-width: 90%;
+        }
+
+        .panda-emoji {
+            font-size: 4rem;
+            animation: bounce 1.5s infinite alternate;
+        }
+
+        .panda-emoji:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .panda-emoji:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        .panda-emoji:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+        
+        .panda-emoji:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 7;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #f00;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) rotate(-1deg); }
+            20%, 40%, 60%, 80% { transform: translateX(5px) rotate(1deg); }
+        }
+
+        @keyframes messagePulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+        }
+
+        @keyframes runAway {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(var(--moveX), var(--moveY)); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                height: 500px;
+            }
+            
+            .error-code {
+                font-size: 6rem;
+            }
+            
+            .error-message {
+                font-size: 1.8rem;
+            }
+            
+            .panda-logo {
+                font-size: 4rem;
+            }
+            
+            .valentine-title {
+                font-size: 2.8rem;
+            }
+            
+            .btn {
+                padding: 14px 30px;
+                font-size: 1.2rem;
+            }
+            
+            .celebration-message {
+                font-size: 2.5rem;
+            }
+            
+            .panda-emoji {
+                font-size: 3rem;
+            }
+            
+            .buttons-container {
+                height: 100px;
+                flex-direction: column;
+            }
+            
+            .btn-yes {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                height: 550px;
+            }
+            
+            .error-code {
+                font-size: 5rem;
+            }
+            
+            .valentine-title {
+                font-size: 2.2rem;
+                padding: 0 10px;
+            }
+            
+            .buttons-container {
+                height: 120px;
+            }
+            
+            .celebration-message {
+                font-size: 2.2rem;
+                padding: 0 10px;
+            }
+            
+            .panda-emoji {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Animation Classes */
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: opacity 0.8s ease, transform 0.8s ease, visibility 0s 0.8s;
+        }
+
+        .visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .buttons-fade-out {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 0s 1s;
+        }
+        
+        .no-button-shy {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .run-away {
+            animation: runAway 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 404 Error Screen -->
+        <div class="error-screen visible" id="errorScreen">
+            <div class="error-content">
+                <div class="error-code">404</div>
+                <div class="error-message">Page Not Found</div>
+                <button class="btn btn-refresh" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Valentine's Invitation Screen -->
+        <div class="valentine-screen hidden" id="valentineScreen">
+            <div class="valentine-content">
+                <div class="panda-logo">🐼</div>
+                <h1 class="valentine-title">Maya, will you be my date on sunday?</h1>
+                <div class="button-wrapper">
+                    <div class="no-message" id="noMessage">No seems a bit shy... 👉👈</div>
+                </div>
+                <div class="buttons-container" id="buttonsContainer">
+                    <button class="btn btn-yes" id="yesBtn">YES</button>
+                    <button class="btn btn-no" id="noBtn">NO</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Celebration Screen -->
+        <div class="celebration-screen hidden" id="celebrationScreen">
+            <div class="celebration-content">
+                <div class="celebration-message">Great! You made the right decision! 🎉</div>
+                <div class="panda-container" id="pandaContainer">
+                    <div class="panda-emoji">🐼</div>
+                    <div class="panda-emoji">🐼</div>
+                    <div class="panda-emoji">🐼</div>
+                    <div class="panda-emoji">🐼</div>
+                    <div class="panda-emoji">🐼</div>
+                </div>
+            </div>
+            <div class="confetti-container" id="confettiContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const errorScreen = document.getElementById('errorScreen');
+        const valentineScreen = document.getElementById('valentineScreen');
+        const celebrationScreen = document.getElementById('celebrationScreen');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const buttonsContainer = document.getElementById('buttonsContainer');
+        const noMessage = document.getElementById('noMessage');
+        const pandaContainer = document.getElementById('pandaContainer');
+        const confettiContainer = document.getElementById('confettiContainer');
+
+        // Track mouse position for NO button movement
+        let mouseX = 0;
+        let mouseY = 0;
+        let isRunningAway = false;
+        let noButtonClickCount = 0;
+
+        // Initialize the page
+        function init() {
+            // Add event listeners
+            refreshBtn.addEventListener('click', showValentineScreen);
+            yesBtn.addEventListener('click', showCelebrationScreen);
+            
+            // Add click listener for NO button (just in case someone manages to click it)
+            noBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleNoButtonHover();
+            });
+            
+            // Track mouse movement for NO button
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                // Check if mouse is close to NO button
+                const noBtnRect = noBtn.getBoundingClientRect();
+                const noBtnCenterX = noBtnRect.left + noBtnRect.width / 2;
+                const noBtnCenterY = noBtnRect.top + noBtnRect.height / 2;
+                
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - noBtnCenterX, 2) + Math.pow(mouseY - noBtnCenterY, 2)
+                );
+                
+                // Show/hide "No seems a bit shy" message when mouse is near
+                if (distance < 150) {
+                    noMessage.style.opacity = '1';
+                } else {
+                    noMessage.style.opacity = '0';
+                }
+                
+                // If mouse is within 100px of NO button and not already running away
+                if (distance < 100 && !isRunningAway) {
+                    handleNoButtonHover();
+                }
+            });
+            
+            // For touch devices
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    mouseX = e.touches[0].clientX;
+                    mouseY = e.touches[0].clientY;
+                    
+                    // Check if touch is close to NO button
+                    const noBtnRect = noBtn.getBoundingClientRect();
+                    const noBtnCenterX = noBtnRect.left + noBtnRect.width / 2;
+                    const noBtnCenterY = noBtnRect.top + noBtnRect.height / 2;
+                    
+                    const distance = Math.sqrt(
+                        Math.pow(mouseX - noBtnCenterX, 2) + Math.pow(mouseY - noBtnCenterY, 2)
+                    );
+                    
+                    if (distance < 150 && !isRunningAway) {
+                        handleNoButtonHover();
+                    }
+                }
+            });
+        }
+
+        // Show Valentine's invitation screen
+        function showValentineScreen() {
+            errorScreen.classList.remove('visible');
+            errorScreen.classList.add('hidden');
+            
+            setTimeout(() => {
+                valentineScreen.classList.remove('hidden');
+                valentineScreen.classList.add('visible');
+                
+                // Reset NO button position
+                resetNoButtonPosition();
+            }, 300);
+        }
+
+        // Reset NO button to initial position
+        function resetNoButtonPosition() {
+            noBtn.style.position = 'static';
+            noBtn.style.left = '';
+            noBtn.style.top = '';
+            noBtn.style.transform = '';
+            noBtn.style.transition = '';
+        }
+
+        // Handle NO button hover (mouse or touch)
+        function handleNoButtonHover() {
+            if (isRunningAway) return;
+            
+            isRunningAway = true;
+            noButtonClickCount++;
+            
+            // Add shy animation
+            noBtn.classList.add('no-button-shy');
+            
+            // Update message based on how many times NO has been approached
+            const messages = [
+                "No seems a bit shy... 👉👈",
+                "No is feeling very shy! 🙈",
+                "No is extremely timid! 😳",
+                "No is running scared! 🏃‍♂️",
+                "Just say YES already! 💖"
+            ];
+            
+            const messageIndex = Math.min(noButtonClickCount - 1, messages.length - 1);
+            noMessage.textContent = messages[messageIndex];
+            
+            // Get container and button dimensions
+            const containerRect = buttonsContainer.getBoundingClientRect();
+            const buttonRect = noBtn.getBoundingClientRect();
+            
+            // Calculate boundaries - keep button within buttons container
+            const padding = 10;
+            const minX = padding;
+            const maxX = containerRect.width - buttonRect.width - padding;
+            const minY = padding;
+            const maxY = containerRect.height - buttonRect.height - padding;
+            
+            // Generate random position within boundaries
+            let randomX, randomY;
+            let attempts = 0;
+            const maxAttempts = 20;
+            
+            do {
+                randomX = Math.floor(Math.random() * (maxX - minX)) + minX;
+                randomY = Math.floor(Math.random() * (maxY - minY)) + minY;
+                attempts++;
+                
+                // Avoid getting stuck in loop
+                if (attempts >= maxAttempts) {
+                    // Use fallback positions
+                    randomX = attempts % 2 === 0 ? minX : maxX;
+                    randomY = attempts % 3 === 0 ? minY : maxY;
+                    break;
+                }
+                
+            } while (Math.abs(randomX - noBtn.offsetLeft) < 30 && Math.abs(randomY - noBtn.offsetTop) < 30);
+            
+            // Apply new position with smooth transition
+            noBtn.style.transition = 'all 0.4s ease';
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            
+            // Remove shy animation class after animation completes
+            setTimeout(() => {
+                noBtn.classList.remove('no-button-shy');
+            }, 500);
+            
+            // Reset flag after animation completes
+            setTimeout(() => {
+                isRunningAway = false;
+            }, 400);
+        }
+
+        // Show celebration screen
+        function showCelebrationScreen() {
+            // Hide YES and NO buttons after 1 second
+            setTimeout(() => {
+                buttonsContainer.classList.add('buttons-fade-out');
+            }, 1000);
+            
+            // Transition to celebration screen
+            setTimeout(() => {
+                valentineScreen.classList.remove('visible');
+                valentineScreen.classList.add('hidden');
+                
+                setTimeout(() => {
+                    celebrationScreen.classList.remove('hidden');
+                    celebrationScreen.classList.add('visible');
+                    
+                    // Start confetti effect
+                    createConfetti();
+                }, 300);
+            }, 1200);
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            confettiContainer.innerHTML = '';
+            const colors = ['#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE'];
+            
+            // Create 150 pieces of confetti
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random properties
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 12 + 5;
+                const posX = Math.random() * 100;
+                const delay = Math.random() * 3;
+                const duration = Math.random() * 3 + 2;
+                
+                // Apply styles
+                confetti.style.backgroundColor = color;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.left = `${posX}%`;
+                confetti.style.top = '-20px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                
+                // Random shape
+                if (Math.random() > 0.7) {
+                    confetti.style.borderRadius = '0';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }
+                
+                // Animation
+                confetti.style.animation = `fall ${duration}s linear ${delay}s forwards`;
+                
+                // Add to container
+                confettiContainer.appendChild(confetti);
+            }
+            
+            // Remove confetti after 5 seconds
+            setTimeout(() => {
+                confettiContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Add CSS for confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(650px) rotate(${Math.random() * 360}deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the page when loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
