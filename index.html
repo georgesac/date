@@ -487,42 +487,70 @@
     </div>
 
     <script>
-        // DOM Elements
-        const errorScreen = document.getElementById('errorScreen');
-        const valentineScreen = document.getElementById('valentineScreen');
-        const celebrationScreen = document.getElementById('celebrationScreen');
-        const refreshBtn = document.getElementById('refreshBtn');
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-        const buttonsContainer = document.getElementById('buttonsContainer');
-        const noMessage = document.getElementById('noMessage');
-        const pandaContainer = document.getElementById('pandaContainer');
-        const confettiContainer = document.getElementById('confettiContainer');
+    // DOM Elements
+    const errorScreen = document.getElementById('errorScreen');
+    const valentineScreen = document.getElementById('valentineScreen');
+    const celebrationScreen = document.getElementById('celebrationScreen');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const buttonsContainer = document.getElementById('buttonsContainer');
+    const noMessage = document.getElementById('noMessage');
+    const pandaContainer = document.getElementById('pandaContainer');
+    const confettiContainer = document.getElementById('confettiContainer');
 
-        // Track mouse position for NO button movement
-        let mouseX = 0;
-        let mouseY = 0;
-        let isRunningAway = false;
-        let noButtonClickCount = 0;
+    // Track mouse position for NO button movement
+    let mouseX = 0;
+    let mouseY = 0;
+    let isRunningAway = false;
+    let noButtonClickCount = 0;
 
-        // Initialize the page
-        function init() {
-            // Add event listeners
-            refreshBtn.addEventListener('click', showValentineScreen);
-            yesBtn.addEventListener('click', showCelebrationScreen);
+    // Initialize the page
+    function init() {
+        // Add event listeners
+        refreshBtn.addEventListener('click', showValentineScreen);
+        yesBtn.addEventListener('click', showCelebrationScreen);
+        
+        // Add click listener for NO button (just in case someone manages to click it)
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleNoButtonHover();
+        });
+        
+        // Track mouse movement for NO button
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
             
-            // Add click listener for NO button (just in case someone manages to click it)
-            noBtn.addEventListener('click', (e) => {
-                e.preventDefault();
+            // Check if mouse is close to NO button
+            const noBtnRect = noBtn.getBoundingClientRect();
+            const noBtnCenterX = noBtnRect.left + noBtnRect.width / 2;
+            const noBtnCenterY = noBtnRect.top + noBtnRect.height / 2;
+            
+            const distance = Math.sqrt(
+                Math.pow(mouseX - noBtnCenterX, 2) + Math.pow(mouseY - noBtnCenterY, 2)
+            );
+            
+            // Show/hide "No seems a bit shy" message when mouse is near
+            if (distance < 120) {
+                noMessage.style.opacity = '1';
+            } else {
+                noMessage.style.opacity = '0';
+            }
+            
+            // If mouse is within 80px of NO button and not already running away
+            if (distance < 80 && !isRunningAway) {
                 handleNoButtonHover();
-            });
-            
-            // Track mouse movement for NO button
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
+            }
+        });
+        
+        // For touch devices
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
                 
-                // Check if mouse is close to NO button
+                // Check if touch is close to NO button
                 const noBtnRect = noBtn.getBoundingClientRect();
                 const noBtnCenterX = noBtnRect.left + noBtnRect.width / 2;
                 const noBtnCenterY = noBtnRect.top + noBtnRect.height / 2;
@@ -531,237 +559,204 @@
                     Math.pow(mouseX - noBtnCenterX, 2) + Math.pow(mouseY - noBtnCenterY, 2)
                 );
                 
-                // Show/hide "No seems a bit shy" message when mouse is near
-                if (distance < 120) {
-                    noMessage.style.opacity = '1';
-                } else {
-                    noMessage.style.opacity = '0';
-                }
-                
-                // If mouse is within 80px of NO button and not already running away
-                if (distance < 80 && !isRunningAway) {
+                if (distance < 120 && !isRunningAway) {
                     handleNoButtonHover();
                 }
-            });
-            
-            // For touch devices
-            document.addEventListener('touchmove', (e) => {
-                if (e.touches.length > 0) {
-                    mouseX = e.touches[0].clientX;
-                    mouseY = e.touches[0].clientY;
-                    
-                    // Check if touch is close to NO button
-                    const noBtnRect = noBtn.getBoundingClientRect();
-                    const noBtnCenterX = noBtnRect.left + noBtnRect.width / 2;
-                    const noBtnCenterY = noBtnRect.top + noBtnRect.height / 2;
-                    
-                    const distance = Math.sqrt(
-                        Math.pow(mouseX - noBtnCenterX, 2) + Math.pow(mouseY - noBtnCenterY, 2)
-                    );
-                    
-                    if (distance < 120 && !isRunningAway) {
-                        handleNoButtonHover();
-                    }
-                }
-            });
-        }
+            }
+        });
+    }
 
-        // Show Valentine's invitation screen
-        function showValentineScreen() {
-            errorScreen.classList.remove('visible');
-            errorScreen.classList.add('hidden');
+    // Show Valentine's invitation screen
+    function showValentineScreen() {
+        errorScreen.classList.remove('visible');
+        errorScreen.classList.add('hidden');
+        
+        setTimeout(() => {
+            valentineScreen.classList.remove('hidden');
+            valentineScreen.classList.add('visible');
+            
+            // Reset NO button position
+            resetNoButtonPosition();
+        }, 300);
+    }
+
+    // Reset NO button to initial position
+    function resetNoButtonPosition() {
+        // Position NO button below YES button
+        const yesBtnRect = yesBtn.getBoundingClientRect();
+        
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = '50%';
+        noBtn.style.top = '70%';
+        noBtn.style.transform = 'translateX(-50%)';
+        noBtn.style.transition = 'all 0.4s ease';
+    }
+
+    // Handle NO button hover (mouse or touch)
+    function handleNoButtonHover() {
+        if (isRunningAway) return;
+        
+        isRunningAway = true;
+        noButtonClickCount++;
+        
+        // Add shy animation
+        noBtn.classList.add('no-button-shy');
+        
+        // Update message based on how many times NO has been approached
+        const messages = [
+            "No seems a bit shy... 👉👈",
+            "No is feeling very shy! 🙈",
+            "No is extremely timid! 😳",
+            "No is running scared! 🏃‍♂️",
+            "Just say YES already! 💖"
+        ];
+        
+        const messageIndex = Math.min(noButtonClickCount - 1, messages.length - 1);
+        noMessage.textContent = messages[messageIndex];
+        
+        // Get the white container
+        const container = document.querySelector('.container');
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = noBtn.getBoundingClientRect();
+        
+        // The container dimensions (white box)
+        const containerWidth = container.offsetWidth;
+        const containerHeight = container.offsetHeight;
+        
+        // Button dimensions
+        const buttonWidth = buttonRect.width;
+        const buttonHeight = buttonRect.height;
+        
+        // Calculate safe area (button must stay completely inside container)
+        const padding = 10;
+        const minX = padding;
+        const maxX = containerWidth - buttonWidth - padding;
+        const minY = padding;
+        const maxY = containerHeight - buttonHeight - padding;
+        
+        // Generate random position that keeps button inside container
+        let randomX, randomY;
+        let attempts = 0;
+        const maxAttempts = 10;
+        
+        do {
+            randomX = Math.floor(Math.random() * (maxX - minX)) + minX;
+            randomY = Math.floor(Math.random() * (maxY - minY)) + minY;
+            attempts++;
+            
+            if (attempts >= maxAttempts) {
+                // Default to middle of container if can't find good position
+                randomX = containerWidth / 2 - buttonWidth / 2;
+                randomY = containerHeight / 2 - buttonHeight / 2;
+                break;
+            }
+            
+        } while (Math.abs(randomX - parseFloat(noBtn.style.left || 0)) < 50 && 
+                 Math.abs(randomY - parseFloat(noBtn.style.top || 0)) < 50);
+        
+        // Apply new position with smooth transition
+        noBtn.style.transition = 'all 0.4s ease';
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = `${randomX}px`;
+        noBtn.style.top = `${randomY}px`;
+        noBtn.style.transform = 'none';
+        
+        // Remove shy animation class after animation completes
+        setTimeout(() => {
+            noBtn.classList.remove('no-button-shy');
+        }, 500);
+        
+        // Reset flag after animation completes
+        setTimeout(() => {
+            isRunningAway = false;
+        }, 400);
+    }
+
+    // Show celebration screen
+    function showCelebrationScreen() {
+        // Hide YES and NO buttons after 1 second
+        setTimeout(() => {
+            buttonsContainer.classList.add('buttons-fade-out');
+        }, 1000);
+        
+        // Transition to celebration screen
+        setTimeout(() => {
+            valentineScreen.classList.remove('visible');
+            valentineScreen.classList.add('hidden');
             
             setTimeout(() => {
-                valentineScreen.classList.remove('hidden');
-                valentineScreen.classList.add('visible');
+                celebrationScreen.classList.remove('hidden');
+                celebrationScreen.classList.add('visible');
                 
-                // Reset NO button position
-                resetNoButtonPosition();
+                // Start confetti effect
+                createConfetti();
             }, 300);
-        }
+        }, 1200);
+    }
 
-        // Reset NO button to initial position
-        function resetNoButtonPosition() {
-            // Position NO button below YES button
-            const yesBtnRect = yesBtn.getBoundingClientRect();
-            const containerRect = valentineScreen.getBoundingClientRect();
+    // Create confetti effect
+    function createConfetti() {
+        confettiContainer.innerHTML = '';
+        const colors = ['#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE'];
+        
+        // Create 150 pieces of confetti
+        for (let i = 0; i < 150; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
             
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = '50%';
-            noBtn.style.top = `${yesBtnRect.height + 70}px`;
-            noBtn.style.transform = 'translateX(-50%)';
-            noBtn.style.transition = 'all 0.4s ease';
+            // Random properties
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const size = Math.random() * 12 + 5;
+            const posX = Math.random() * 100;
+            const delay = Math.random() * 3;
+            const duration = Math.random() * 3 + 2;
+            
+            // Apply styles
+            confetti.style.backgroundColor = color;
+            confetti.style.width = `${size}px`;
+            confetti.style.height = `${size}px`;
+            confetti.style.left = `${posX}%`;
+            confetti.style.top = '-20px';
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            
+            // Random shape
+            if (Math.random() > 0.7) {
+                confetti.style.borderRadius = '0';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            }
+            
+            // Animation
+            confetti.style.animation = `fall ${duration}s linear ${delay}s forwards`;
+            
+            // Add to container
+            confettiContainer.appendChild(confetti);
         }
-
-        // Handle NO button hover (mouse or touch)
-        function handleNoButtonHover() {
-            if (isRunningAway) return;
-            
-            isRunningAway = true;
-            noButtonClickCount++;
-            
-            // Add shy animation
-            noBtn.classList.add('no-button-shy');
-            
-            // Update message based on how many times NO has been approached
-            const messages = [
-                "No seems a bit shy... 👉👈",
-                "No is feeling very shy! 🙈",
-                "No is extremely timid! 😳",
-                "No is running scared! 🏃‍♂️",
-                "Just say YES already! 💖"
-            ];
-            
-            const messageIndex = Math.min(noButtonClickCount - 1, messages.length - 1);
-            noMessage.textContent = messages[messageIndex];
-            
-            // Get the container dimensions (the white box)
-            const container = document.querySelector('.container');
-            const containerRect = container.getBoundingClientRect();
-            const buttonRect = noBtn.getBoundingClientRect();
-            
-            // Calculate boundaries - keep NO button INSIDE the white container
-            const padding = 15;
-            
-            // The container is positioned relative to the viewport, but we need 
-            // coordinates relative to the container itself
-            const containerLeft = 0;
-            const containerTop = 0;
-            const containerRight = containerRect.width;
-            const containerBottom = containerRect.height;
-            
-            // Calculate min and max positions to keep button inside container
-            const minX = containerLeft + padding;
-            const maxX = containerRight - buttonRect.width - padding;
-            const minY = containerTop + padding;
-            const maxY = containerBottom - buttonRect.height - padding;
-            
-            // Generate random position within the container bounds
-            let randomX, randomY;
-            let attempts = 0;
-            const maxAttempts = 20;
-            
-            do {
-                randomX = Math.floor(Math.random() * (maxX - minX)) + minX;
-                randomY = Math.floor(Math.random() * (maxY - minY)) + minY;
-                attempts++;
-                
-                // Avoid getting stuck in loop
-                if (attempts >= maxAttempts) {
-                    // Use fallback positions (middle area of container)
-                    randomX = containerRect.width / 2 - buttonRect.width / 2;
-                    randomY = containerRect.height / 2;
-                    break;
-                }
-                
-            } while (Math.abs(randomX - noBtn.offsetLeft) < 40 && Math.abs(randomY - noBtn.offsetTop) < 40);
-            
-            // Ensure the button stays within bounds
-            randomX = Math.max(minX, Math.min(randomX, maxX));
-            randomY = Math.max(minY, Math.min(randomY, maxY));
-            
-            // Apply new position with smooth transition
-            noBtn.style.transition = 'all 0.4s ease';
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
-            noBtn.style.transform = 'none';
-            
-            // Remove shy animation class after animation completes
-            setTimeout(() => {
-                noBtn.classList.remove('no-button-shy');
-            }, 500);
-            
-            // Reset flag after animation completes
-            setTimeout(() => {
-                isRunningAway = false;
-            }, 400);
-        }
-
-        // Show celebration screen
-        function showCelebrationScreen() {
-            // Hide YES and NO buttons after 1 second
-            setTimeout(() => {
-                buttonsContainer.classList.add('buttons-fade-out');
-            }, 1000);
-            
-            // Transition to celebration screen
-            setTimeout(() => {
-                valentineScreen.classList.remove('visible');
-                valentineScreen.classList.add('hidden');
-                
-                setTimeout(() => {
-                    celebrationScreen.classList.remove('hidden');
-                    celebrationScreen.classList.add('visible');
-                    
-                    // Start confetti effect
-                    createConfetti();
-                }, 300);
-            }, 1200);
-        }
-
-        // Create confetti effect
-        function createConfetti() {
+        
+        // Remove confetti after 5 seconds
+        setTimeout(() => {
             confettiContainer.innerHTML = '';
-            const colors = ['#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE'];
-            
-            // Create 150 pieces of confetti
-            for (let i = 0; i < 150; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                
-                // Random properties
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const size = Math.random() * 12 + 5;
-                const posX = Math.random() * 100;
-                const delay = Math.random() * 3;
-                const duration = Math.random() * 3 + 2;
-                
-                // Apply styles
-                confetti.style.backgroundColor = color;
-                confetti.style.width = `${size}px`;
-                confetti.style.height = `${size}px`;
-                confetti.style.left = `${posX}%`;
-                confetti.style.top = '-20px';
-                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                
-                // Random shape
-                if (Math.random() > 0.7) {
-                    confetti.style.borderRadius = '0';
-                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                }
-                
-                // Animation
-                confetti.style.animation = `fall ${duration}s linear ${delay}s forwards`;
-                
-                // Add to container
-                confettiContainer.appendChild(confetti);
+        }, 5000);
+    }
+
+    // Add CSS for confetti animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
             }
-            
-            // Remove confetti after 5 seconds
-            setTimeout(() => {
-                confettiContainer.innerHTML = '';
-            }, 5000);
+            100% {
+                transform: translateY(650px) rotate(${Math.random() * 360}deg);
+                opacity: 0;
+            }
         }
+    `;
+    document.head.appendChild(style);
 
-        // Add CSS for confetti animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fall {
-                0% {
-                    transform: translateY(0) rotate(0deg);
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(650px) rotate(${Math.random() * 360}deg);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Initialize the page when loaded
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    // Initialize the page when loaded
+    document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
+
